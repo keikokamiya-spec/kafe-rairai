@@ -477,8 +477,7 @@
     </svg>
   </button>
   <nav class="site-nav" id="siteNav">
-    <button class="nav-close" id="navClose" aria-label="メニューを閉じる">✕</button>
-    <ul>
+<ul>
       <li><a href="#about">カフェらいらいとは</a></li>
       <li class="nav-submenu">
         <a href="#menu">提供メニュー ▾</a>
@@ -663,27 +662,7 @@
   </div>
 </section>
 
-<!-- ========== CALENDAR ========== -->
 <section class="section" id="calendar">
-  <div class="calendar-box">
-    <h2 class="heading-asterisk"><strong>予約表</strong></h2>
-    <div class="spacer-s"></div>
-    <p>
-      カフェらいらいが提供するサービスは<br>全て予約可能です。<br>
-      参加したいイベントがございましたら<br>
-      <a href="tel:0453495525">045-349-5525</a> までご予約をお願い致します。
-    </p>
-    <div class="calendar-embed">
-      <iframe
-        src="https://calendar.google.com/calendar/embed?src=example@gmail.com&pli=1"
-        frameborder="0"
-        scrolling="no"
-        referrerpolicy="no-referrer-when-downgrade"
-        title="予約カレンダー"
-      ></iframe>
-    </div>
-  </div>
-
   <!-- CONTACT -->
   <div class="contact-box">
     <h2 class="heading-asterisk"><strong>お問い合わせ</strong></h2>
@@ -758,11 +737,9 @@
 <script>
   // ---- Hamburger menu ----
   const navToggle = document.getElementById('navToggle');
-  const navClose  = document.getElementById('navClose');
-  const siteNav   = document.getElementById('siteNav');
+const siteNav   = document.getElementById('siteNav');
   navToggle.addEventListener('click', () => siteNav.classList.add('open'));
-  navClose.addEventListener('click',  () => siteNav.classList.remove('open'));
-  siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => siteNav.classList.remove('open')));
+siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => siteNav.classList.remove('open')));
 
   // ---- Slider ----
   const sliderState = {};
