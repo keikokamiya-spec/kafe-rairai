@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>カフェらいらい</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-base: #f9f9f9;
+      --color-base-2: #ffffff;
+      --color-contrast: #111111;
+      --color-contrast-2: #636363;
+      --color-contrast-3: #A4A4A4;
+      --color-accent: #cfcabe;
+      --font-body: "Instrument Sans", -apple-system, sans-serif;
+      --font-heading: "Jost", -apple-system, sans-serif;
+      --sp-10: 1rem;
+      --sp-20: min(1.5rem, 2vw);
+      --sp-30: min(2.5rem, 3vw);
+      --sp-40: min(4rem, 5vw);
+      --sp-50: min(6.5rem, 8vw);
+      --sp-60: min(10.5rem, 13vw);
+    }
+
+    @font-face {
+      font-family: "Instrument Sans";
+      font-style: normal;
+      font-weight: 400 700;
+      src: url('https://cafe-rairai-isogo.com/wp-content/themes/twentytwentyfour/assets/fonts/instrument-sans/InstrumentSans-VariableFont_wdth,wght.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: "Jost";
+      font-style: normal;
+      font-weight: 100 900;
+      src: url('https://cafe-rairai-isogo.com/wp-content/themes/twentytwentyfour/assets/fonts/jost/Jost-VariableFont_wght.woff2') format('woff2');
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--color-base);
+      color: var(--color-contrast);
+      font-family: var(--font-body);
+      font-size: clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.208), 16px);
+      line-height: 1.55;
+    }
+
+    a { color: var(--color-contrast); text-decoration: underline; }
+    a:hover { text-decoration: none; }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      line-height: 1.2;
+      color: var(--color-contrast);
+    }
+
+    img { max-width: 100%; height: auto; display: block; }
+
+    /* ========== HEADER ========== */
+    .site-header {
+      background-color: var(--color-base);
+      padding: 20px var(--sp-60);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+
+    .site-title {
+      font-family: var(--font-body);
+      font-size: clamp(0.875rem, 0.875rem + ((1vw - 0.2rem) * 0.542), 1.2rem);
+      font-weight: 400;
+    }
+    .site-title a { text-decoration: none; }
+    .site-title a:hover { text-decoration: none; }
+
+    /* NAV */
+    .site-nav ul {
+      list-style: none;
+      display: flex;
+      gap: var(--sp-20);
+      align-items: center;
+    }
+    .site-nav a { text-decoration: none; font-size: 0.9rem; }
+    .site-nav a:hover { text-decoration: underline; }
+
+    .nav-submenu { position: relative; }
+    .nav-submenu > ul {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--color-base-2);
+      box-shadow: 0 4px 12px rgba(0,0,0,.1);
+      border-radius: 8px;
+      min-width: 180px;
+      padding: 8px 0;
+      flex-direction: column;
+      gap: 0;
+      z-index: 200;
+    }
+    .nav-submenu > ul li { padding: 6px 16px; }
+    .nav-submenu:hover > ul { display: flex; }
+
+    /* hamburger */
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-toggle svg { display: block; }
+
+    @media (max-width: 768px) {
+      .site-header { padding: 16px var(--sp-40); }
+      .nav-toggle { display: block; }
+      .site-nav {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: var(--color-base-2);
+        z-index: 999;
+        justify-content: center;
+        align-items: center;
+      }
+      .site-nav.open { display: flex; }
+      .site-nav ul { flex-direction: column; gap: 1.5rem; font-size: 1.2rem; }
+      .nav-close {
+        position: absolute;
+        top: 20px; right: 20px;
+        background: none; border: none; cursor: pointer; font-size: 2rem;
+      }
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      position: relative;
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #fff;
+      text-align: center;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(116,114,113,0.5);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
+    }
+    .hero-content h1 {
+      font-size: clamp(33px, 2.089rem + ((1vw - 3.2px) * 2.769), 60px);
+      color: #fff;
+    }
+    .hero-content p {
+      font-size: clamp(20px, 1.282rem + ((1vw - 3.2px) * 1.301), 33px);
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    /* ========== SECTIONS ========== */
+    .section { padding: var(--sp-50) var(--sp-50); }
+    .section-alt { background-color: var(--color-base-2); }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(29px, 1.802rem + ((1vw - 3.2px) * 2.205), 50px);
+      margin-bottom: 2rem;
+    }
+    .section-subtitle {
+      text-align: center;
+      font-size: clamp(25px, 1.563rem + ((1vw - 3.2px) * 2.083), 42px);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ========== ABOUT ========== */
+    .about { text-align: center; }
+    .about h2 { margin-bottom: 2rem; }
+    .about p {
+      font-size: clamp(15px, 0.95rem + ((1vw - 3.2px) * 0.813), 23px);
+      margin-bottom: 1.2rem;
+      line-height: 1.8;
+    }
+    .about-author { font-size: clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.625), 20px); }
+
+    /* ========== SERVICES ========== */
+    .services { background-color: var(--color-base); }
+    .service-item {
+      display: flex;
+      gap: var(--sp-50);
+      align-items: center;
+      margin-bottom: var(--sp-50);
+    }
+    .service-item.reverse { flex-direction: row-reverse; }
+    .service-text { flex: 0 0 40%; }
+    .service-media { flex: 1; }
+
+    .service-text h3 {
+      text-align: center;
+      font-size: clamp(20px, 1.282rem + ((1vw - 3.2px) * 1.301), 33px);
+      margin-bottom: 1rem;
+    }
+    .service-text .sub {
+      text-align: center;
+      font-size: clamp(16px, 1.018rem + ((1vw - 3.2px) * 0.907), 25px);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+    .service-text ul {
+      list-style: disc;
+      padding-left: 1.4rem;
+    }
+    .service-text ul li {
+      font-size: clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.313), 17px);
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .service-item, .service-item.reverse { flex-direction: column; }
+      .service-text { flex: none; width: 100%; }
+    }
+
+    /* ========== SLIDER ========== */
+    .slider-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      height: 300px;
+    }
+    .slider-track { display: flex; height: 100%; transition: transform 0.5s ease; }
+    .slider-slide {
+      min-width: 100%;
+      height: 100%;
+    }
+    .slider-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .slider-btn {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.8);
+      border: none;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10;
+    }
+    .slider-btn.prev { left: 8px; }
+    .slider-btn.next { right: 8px; }
+    .slider-dots {
+      position: absolute;
+      bottom: 8px;
+      left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px;
+    }
+    .slider-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      border: none; cursor: pointer;
+    }
+    .slider-dot.active { background: #fff; }
+
+    @media (max-width: 600px) { .slider-container { height: 200px; } }
+
+    /* ========== ACTIVITY REPORTS ========== */
+    .reports-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    .report-card { }
+    .report-card img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+    .report-card a {
+      font-size: 0.9rem;
+      display: block;
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .report-card a:hover { text-decoration: underline; }
+
+    @media (max-width: 960px) { .reports-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .reports-grid { grid-template-columns: 1fr; } }
+
+    /* ========== CALENDAR ========== */
+    .calendar-box {
+      background: var(--color-base-2);
+      border-radius: 16px;
+      padding: var(--sp-40);
+      text-align: center;
+    }
+    .calendar-box h2 { margin-bottom: 1rem; }
+    .calendar-box p { margin-bottom: 1.5rem; font-size: clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.625), 20px); line-height: 1.8; }
+    .calendar-embed {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding-bottom: 75%;
+      height: 0;
+      overflow: hidden;
+    }
+    .calendar-embed iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      border: 0;
+    }
+
+    /* ========== CONTACT FORM ========== */
+    .contact-box {
+      background: var(--color-base-2);
+      border-radius: 16px;
+      padding: var(--sp-40) var(--sp-50);
+      margin-top: 2rem;
+    }
+    .contact-box h2 { text-align: center; margin-bottom: 1.5rem; }
+    .form-field { margin-bottom: 1.2rem; }
+    .form-field label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .form-field label .required { color: #c00; margin-left: 4px; }
+    .form-field input, .form-field textarea {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+    .form-field input:focus, .form-field textarea:focus {
+      outline: none;
+      border-color: var(--color-contrast);
+    }
+    .form-field textarea { resize: vertical; min-height: 160px; }
+    .form-submit button {
+      background: var(--color-contrast);
+      color: #fff;
+      border: none;
+      border-radius: 100px;
+      padding: 0.9rem 2rem;
+      font-size: 0.9rem;
+      font-family: var(--font-heading);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .form-submit button:hover { background: var(--color-contrast-2); }
+    .form-notice {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--color-contrast-2);
+      display: none;
+    }
+
+    /* ========== BASIC INFO ========== */
+    .info-box {
+      background: var(--color-base-2);
+      border-radius: 16px;
+      padding: var(--sp-40) var(--sp-50);
+    }
+    .info-box h2 { text-align: center; margin-bottom: 1.5rem; }
+    .info-columns {
+      display: flex;
+      gap: var(--sp-50);
+      align-items: flex-start;
+    }
+    .info-text {
+      flex: 0 0 40%;
+      font-size: clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.313), 17px);
+      text-align: center;
+      line-height: 1.8;
+    }
+    .info-text a { color: var(--color-contrast); }
+    .info-map { flex: 1; }
+    .info-map iframe {
+      width: 100% !important;
+      max-width: 600px;
+      aspect-ratio: 4/3;
+      border: 0;
+      border-radius: 8px;
+    }
+    .social-links { display: flex; justify-content: center; gap: 0.8rem; margin: 1rem 0; }
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: #f00075;
+      color: #fff;
+      text-decoration: none;
+      transition: transform 0.15s ease;
+    }
+    .social-link:hover { transform: scale(1.1); color: #fff; }
+    .social-link svg { width: 1em; height: 1em; fill: currentColor; }
+
+    @media (max-width: 768px) {
+      .info-columns { flex-direction: column; }
+      .info-text { flex: none; width: 100%; }
+    }
+
+    /* ========== FOOTER ========== */
+    .site-footer {
+      padding: var(--sp-50) var(--sp-60);
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .footer-inner a { font-size: clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.313), 17px); }
+
+    /* ========== UTILITY ========== */
+    .text-center { text-align: center; }
+    .spacer-s { height: 1.5rem; }
+    .spacer-m { height: 2.5rem; }
+    .spacer-l { height: 4rem; }
+    .card-wrap {
+      background: var(--color-base-2);
+      border-radius: 16px;
+      padding: var(--sp-40) var(--sp-50);
+    }
+
+    /* asterisk heading style */
+    .heading-asterisk::before {
+      content: '';
+      width: 1.5rem;
+      height: 3rem;
+      background: currentColor;
+      clip-path: path('M11.93.684v8.039l5.633-5.633 1.216 1.23-5.66 5.66h8.04v1.737H13.2l5.701 5.701-1.23 1.23-5.742-5.742V21h-1.737v-8.094l-5.77 5.77-1.23-1.217 5.743-5.742H.842V9.98h8.162l-5.701-5.7 1.23-1.231 5.66 5.66V.684h1.737Z');
+      display: block;
+      margin: 0 auto 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="site-header">
+  <div class="site-title"><a href="#top">カフェらいらい</a></div>
+  <button class="nav-toggle" id="navToggle" aria-label="メニューを開く">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 7.5h16v1.5H4z" fill="currentColor"/>
+      <path d="M4 15h16v1.5H4z" fill="currentColor"/>
+    </svg>
+  </button>
+  <nav class="site-nav" id="siteNav">
+    <button class="nav-close" id="navClose" aria-label="メニューを閉じる">✕</button>
+    <ul>
+      <li><a href="#about">カフェらいらいとは</a></li>
+      <li class="nav-submenu">
+        <a href="#menu">提供メニュー ▾</a>
+        <ul>
+          <li><a href="#menu_food">食事・お弁当提供</a></li>
+          <li><a href="#menu_make">ものづくり体験</a></li>
+          <li><a href="#menu_space">レンタルスペース</a></li>
+          <li><a href="#menu_sewing">ミシン貸し出し</a></li>
+        </ul>
+      </li>
+      <li><a href="#calendar">予約表</a></li>
+      <li><a href="#activity">活動報告</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="top">
+  <img
+    class="hero-bg"
+    src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-08-30_000.jpeg"
+    alt="カフェらいらい"
+  />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>カフェらいらい</h1>
+    <p>地域の友達作りが<br>できる場所</p>
+  </div>
+</section>
+
+<!-- ========== ABOUT ========== -->
+<section class="section about" id="about">
+  <div class="spacer-m"></div>
+  <h2><strong>ものづくりと憩いの空間</strong></h2>
+  <div class="spacer-m"></div>
+  <p>「カフェらいらい」を始めたのは、<br>"ものづくりの楽しさを<br>もっと多くの人に届けたい！"<br>という想いからでした。</p>
+  <p>21歳で調理の道に入り13年。<br>その後、介護の世界に飛び込み、<br>自分にできることを模索する中で<br>「カフェらいらい」が誕生しました。</p>
+  <p>【 飲食＋ものづくり＋レンタルスペース 】<br>が融合した、<br>世代を超えて集まれる<br>ハイブリッドな居場所。</p>
+  <p>ここで、新しい楽しみやつながりが生まれたら、<br>こんなに嬉しいことはありません。</p>
+  <div class="spacer-s"></div>
+  <p class="about-author">カフェらいらい店主<br>市川 幸裕</p>
+</section>
+
+<!-- ========== SERVICES ========== -->
+<section class="section" id="menu">
+  <h2 class="section-title heading-asterisk"><strong>サービス内容</strong></h2>
+
+  <!-- 1. 食事 -->
+  <div class="service-item" id="menu_food">
+    <div class="service-text">
+      <h3><strong>1. お食事・お弁当の提供</strong></h3>
+      <p class="sub">心と体を満たす<br>こだわりのカフェごはん</p>
+      <ul>
+        <li>固定メニュー（サンドウィッチ / スパゲッティ / オムライス）</li>
+        <li>大盛り無料、小盛り20円引き</li>
+        <li>日替わりメニューは <a href="https://www.instagram.com/caferairai.2025/" target="_blank" rel="noopener">Instagram</a> から！</li>
+      </ul>
+    </div>
+    <div class="service-media">
+      <div class="slider-container" id="slider1">
+        <div class="slider-track" id="track1">
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/34564_0.jpg" alt="食事メニュー1" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/34563_0.jpg" alt="食事メニュー2" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-07-03_000.jpeg" alt="食事メニュー3" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-13-48_000.jpeg" alt="食事メニュー4" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-11-45_000.jpeg" alt="食事メニュー5" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-22-23_000.jpeg" alt="食事メニュー6" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-15-20_000.jpeg" alt="食事メニュー7" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/34566_0.jpg" alt="食事メニュー8" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/34565_0.jpg" alt="食事メニュー9" loading="lazy"></div>
+        </div>
+        <button class="slider-btn prev" onclick="slide('slider1','prev')">‹</button>
+        <button class="slider-btn next" onclick="slide('slider1','next')">›</button>
+        <div class="slider-dots" id="dots1"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer-l"></div>
+
+  <!-- 2. ものづくり -->
+  <div class="service-item reverse" id="menu_make">
+    <div class="service-text">
+      <h3><strong>2. ものづくり体験</strong></h3>
+      <p class="sub">ものづくり好き店主が教える<br>創作体験ワークショップ</p>
+      <ul>
+        <li>アメリカンフラワー/ UVレジン/ コルクアート/ 箱庭作りの中から1つ選択</li>
+        <li>参加費は全て1,000円（※コルクアート大のみ1,800円）</li>
+        <li>講師をやりたい方も募集中！</li>
+      </ul>
+    </div>
+    <div class="service-media">
+      <div class="slider-container" id="slider2">
+        <div class="slider-track" id="track2">
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/02/3.5.1.jpg" alt="ものづくり体験" loading="lazy"></div>
+        </div>
+        <div class="slider-dots" id="dots2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer-l"></div>
+
+  <!-- 3. レンタルスペース -->
+  <div class="service-item" id="menu_space">
+    <div class="service-text">
+      <h3><strong>3. レンタルスペース</strong></h3>
+      <p class="sub">出来たての食事を楽しみながら<br>駅近の憩いの場</p>
+      <ul>
+        <li>14名まで利用可。席のアレンジもOK</li>
+        <li>持ち込みNG。カフェらいらいが提供する食事（弁当除く）の注文が必須</li>
+        <li>料金は注文した飲食代のみ</li>
+      </ul>
+    </div>
+    <div class="service-media">
+      <div class="slider-container" id="slider3">
+        <div class="slider-track" id="track3">
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-23-08_000.jpeg" alt="スペース1" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-23-28_000.jpeg" alt="スペース2" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-17-27_000.jpeg" alt="スペース3" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/2025-03-03_11-17-07_000.jpeg" alt="スペース4" loading="lazy"></div>
+        </div>
+        <button class="slider-btn prev" onclick="slide('slider3','prev')">‹</button>
+        <button class="slider-btn next" onclick="slide('slider3','next')">›</button>
+        <div class="slider-dots" id="dots3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer-l"></div>
+
+  <!-- 4. ミシン -->
+  <div class="service-item reverse" id="menu_sewing">
+    <div class="service-text">
+      <h3><strong>4. ミシン貸し出し</strong></h3>
+      <p class="sub">ズボンの裾直しや通園バッグ制作など<br>ちょっとした作業に</p>
+      <ul>
+        <li>1台、1時間単位で貸出。予約優先。</li>
+        <li>材料提供なし。店舗内のみ利用可</li>
+        <li>カフェらいらいが提供する食事・弁当の注文が必須</li>
+        <li>料金は注文した飲食代のみ</li>
+      </ul>
+    </div>
+    <div class="service-media">
+      <div class="slider-container" id="slider4">
+        <div class="slider-track" id="track4">
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/34568.jpg" alt="ミシン1" loading="lazy"></div>
+          <div class="slider-slide"><img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/34567.jpg" alt="ミシン2" loading="lazy"></div>
+        </div>
+        <button class="slider-btn prev" onclick="slide('slider4','prev')">‹</button>
+        <button class="slider-btn next" onclick="slide('slider4','next')">›</button>
+        <div class="slider-dots" id="dots4"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ACTIVITY REPORTS ========== -->
+<section class="section section-alt" id="activity">
+  <div class="card-wrap">
+    <div class="spacer-s"></div>
+    <h2 class="section-title heading-asterisk"><strong>活動報告</strong></h2>
+    <div class="spacer-m"></div>
+    <div class="reports-grid">
+      <div class="report-card">
+        <img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/34563_0-300x225.jpg" alt="お弁当配達" loading="lazy">
+        <a href="https://cafe-rairai-isogo.com/2025/11/25/test_blog1/" target="_blank" rel="noopener">お弁当配達いたします。</a>
+      </div>
+      <div class="report-card">
+        <img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/11/ディップフラワー1-e1772099240676-300x225.jpg" alt="活動報告" loading="lazy">
+        <a href="https://cafe-rairai-isogo.com/2025/11/24/test_report1/" target="_blank" rel="noopener">活動報告</a>
+      </div>
+      <div class="report-card">
+        <img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/34565_0-300x225.jpg" alt="テスト" loading="lazy">
+        <a href="https://cafe-rairai-isogo.com/2025/04/10/%e3%83%86%e3%82%b9%e3%83%88/" target="_blank" rel="noopener">カフェらいらいでは、絵の苦手な方のフォローも行っています。</a>
+      </div>
+      <div class="report-card">
+        <img src="https://cafe-rairai-isogo.com/wp-content/uploads/2025/03/34567-300x225.jpg" alt="夏休み工作特集" loading="lazy">
+        <a href="https://cafe-rairai-isogo.com/2025/02/24/test_event1/" target="_blank" rel="noopener">夏休み工作特集</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CALENDAR ========== -->
+<section class="section" id="calendar">
+  <div class="calendar-box">
+    <h2 class="heading-asterisk"><strong>予約表</strong></h2>
+    <div class="spacer-s"></div>
+    <p>
+      カフェらいらいが提供するサービスは<br>全て予約可能です。<br>
+      参加したいイベントがございましたら<br>
+      <a href="tel:0453495525">045-349-5525</a> までご予約をお願い致します。
+    </p>
+    <div class="calendar-embed">
+      <iframe
+        src="https://calendar.google.com/calendar/embed?src=example@gmail.com&pli=1"
+        frameborder="0"
+        scrolling="no"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="予約カレンダー"
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-box">
+    <h2 class="heading-asterisk"><strong>お問い合わせ</strong></h2>
+    <form id="contactForm" novalidate>
+      <div class="form-field">
+        <label for="name">お名前<span class="required">*</span></label>
+        <input type="text" id="name" name="name" required placeholder="山田 花子">
+      </div>
+      <div class="form-field">
+        <label for="email">メールアドレス<span class="required">*</span></label>
+        <input type="email" id="email" name="email" required placeholder="example@mail.com">
+      </div>
+      <div class="form-field">
+        <label for="message">お問い合わせ内容<span class="required">*</span></label>
+        <textarea id="message" name="message" required rows="10"></textarea>
+      </div>
+      <div class="form-submit">
+        <button type="submit">送信する</button>
+      </div>
+      <p class="form-notice" id="formNotice"></p>
+    </form>
+  </div>
+</section>
+
+<!-- ========== BASIC INFO ========== -->
+<section class="section">
+  <div class="info-box">
+    <h2 class="heading-asterisk">基本情報</h2>
+    <div class="spacer-s"></div>
+    <div class="info-columns">
+      <div class="info-text">
+        <p>
+          神奈川県横浜市磯子区磯子3-6−23 アイランドビル1階<br>
+          （JR京浜東北線・磯子駅より徒歩3分）
+        </p>
+        <div class="spacer-s"></div>
+        <p>
+          11:00〜18:00（ラストオーダー 17:30）<br>
+          定休日：毎週木曜、年末年始
+        </p>
+        <div class="spacer-s"></div>
+        <p>
+          <a href="tel:0453495525">045-349-5525</a><br>
+          <a href="mailto:rairai2025@outlook.jp">rairai2025@outlook.jp</a>
+        </p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/caferairai.2025/" class="social-link" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="24" height="24"><path d="M12,4.622c2.403,0,2.688,0.009,3.637,0.052c0.877,0.04,1.354,0.187,1.671,0.31c0.42,0.163,0.72,0.358,1.035,0.673c0.315,0.315,0.51,0.615,0.673,1.035c0.123,0.317,0.27,0.794,0.31,1.671c0.043,0.949,0.052,1.234,0.052,3.637s-0.009,2.688-0.052,3.637c-0.04,0.877-0.187,1.354-0.31,1.671c-0.163,0.42-0.358,0.72-0.673,1.035c-0.315,0.315-0.615,0.51-1.035,0.673c-0.317,0.123-0.794,0.27-1.671,0.31c-0.949,0.043-1.233,0.052-3.637,0.052s-2.688-0.009-3.637-0.052c-0.877-0.04-1.354-0.187-1.671-0.31c-0.42-0.163-0.72-0.358-1.035-0.673c-0.315-0.315-0.51-0.615-0.673-1.035c-0.123-0.317-0.27-0.794-0.31-1.671C4.631,14.688,4.622,14.403,4.622,12s0.009-2.688,0.052-3.637c0.04-0.877,0.187-1.354,0.31-1.671c0.163-0.42,0.358-0.72,0.673-1.035c0.315-0.315,0.615-0.51,1.035-0.673c0.317-0.123,0.794-0.27,1.671-0.31C9.312,4.631,9.597,4.622,12,4.622M12,3C9.556,3,9.249,3.01,8.289,3.054C7.331,3.098,6.677,3.25,6.105,3.472C5.513,3.702,5.011,4.01,4.511,4.511c-0.5,0.5-0.808,1.002-1.038,1.594C3.25,6.677,3.098,7.331,3.054,8.289C3.01,9.249,3,9.556,3,12c0,2.444,0.01,2.751,0.054,3.711c0.044,0.958,0.196,1.612,0.418,2.185c0.23,0.592,0.538,1.094,1.038,1.594c0.5,0.5,1.002,0.808,1.594,1.038c0.572,0.222,1.227,0.375,2.185,0.418C9.249,20.99,9.556,21,12,21s2.751-0.01,3.711-0.054c0.958-0.044,1.612-0.196,2.185-0.418c0.592-0.23,1.094-0.538,1.594-1.038c0.5-0.5,0.808-1.002,1.038-1.594c0.222-0.572,0.375-1.227,0.418-2.185C20.99,14.751,21,14.444,21,12s-0.01-2.751-0.054-3.711c-0.044-0.958-0.196-1.612-0.418-2.185c-0.23-0.592-0.538-1.094-1.038-1.594c-0.5-0.5-1.002-0.808-1.594-1.038c-0.572-0.222-1.227-0.375-2.185-0.418C14.751,3.01,14.444,3,12,3L12,3z M12,7.378c-2.552,0-4.622,2.069-4.622,4.622S9.448,16.622,12,16.622s4.622-2.069,4.622-4.622S14.552,7.378,12,7.378z M12,15c-1.657,0-3-1.343-3-3s1.343-3,3-3s3,1.343,3,3S13.657,15,12,15z M16.804,6.116c-0.596,0-1.08,0.484-1.08,1.08s0.484,1.08,1.08,1.08c0.596,0,1.08-0.484,1.08-1.08S17.401,6.116,16.804,6.116z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="info-map">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3252.1627050791385!2d139.61518717577522!3d35.40121737267886!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6018430041063091%3A0x7a7e61049fbeca1e!2z44Kr44OV44Kn44KJ44GE44KJ44GE!5e0!3m2!1sja!2sjp!4v1772084634272!5m2!1sja!2sjp"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="カフェらいらい 地図"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="https://cafe-rairai-isogo.com/privacy/">プライバシーポリシー</a>
+  </div>
+</footer>
+
+<script>
+  // ---- Hamburger menu ----
+  const navToggle = document.getElementById('navToggle');
+  const navClose  = document.getElementById('navClose');
+  const siteNav   = document.getElementById('siteNav');
+  navToggle.addEventListener('click', () => siteNav.classList.add('open'));
+  navClose.addEventListener('click',  () => siteNav.classList.remove('open'));
+  siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => siteNav.classList.remove('open')));
+
+  // ---- Slider ----
+  const sliderState = {};
+
+  function initSlider(id) {
+    const container = document.getElementById(id);
+    if (!container) return;
+    const track = container.querySelector('.slider-track');
+    const slides = track.querySelectorAll('.slider-slide');
+    const dotsContainer = container.querySelector('.slider-dots');
+    const count = slides.length;
+    if (count === 0) return;
+
+    sliderState[id] = { current: 0, count, track };
+
+    // Build dots
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `スライド${i+1}`);
+      dot.addEventListener('click', () => goTo(id, i));
+      dotsContainer.appendChild(dot);
+    }
+
+    // Autoplay
+    setInterval(() => slide(id, 'next'), 3500);
+  }
+
+  function slide(id, dir) {
+    const s = sliderState[id];
+    if (!s) return;
+    let next = s.current + (dir === 'next' ? 1 : -1);
+    if (next >= s.count) next = 0;
+    if (next < 0) next = s.count - 1;
+    goTo(id, next);
+  }
+
+  function goTo(id, index) {
+    const s = sliderState[id];
+    if (!s) return;
+    s.current = index;
+    s.track.style.transform = `translateX(-${index * 100}%)`;
+    const container = document.getElementById(id);
+    container.querySelectorAll('.slider-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === index);
+    });
+  }
+
+  ['slider1','slider2','slider3','slider4'].forEach(initSlider);
+
+  // ---- Contact form (basic UX feedback) ----
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const notice = document.getElementById('formNotice');
+    notice.style.display = 'block';
+    notice.textContent = 'お問い合わせありがとうございます。内容を確認の上、ご連絡いたします。';
+    this.reset();
+  });
+</script>
+</body>
+</html>
